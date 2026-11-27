@@ -34,8 +34,11 @@ class ReLU:
         주의: 입력 배열 x를 직접 수정하지 마세요. 복사한 배열을 수정해 반환합니다.
         """
         # TODO 1: x <= 0 인 위치를 self.mask에 저장하세요. (backward에서 사용합니다)
+        self.mask = x <= 0
         # TODO 2: x를 복사한 뒤 mask 위치를 0으로 만들어 반환하세요.
-        raise NotImplementedError("ReLU.forward를 구현하세요.")
+        out = x.copy()
+        out[self.mask] = 0
+        return out
 
     def backward(self, dout):
         """
