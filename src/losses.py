@@ -26,6 +26,12 @@ class SoftmaxWithLoss:
         self.y_prob = None
         self.y_true = None
 
+    def prevent_ovf_softmax(self, logits):
+        max_l = np.max(logits, axis = 1, keepdims = True)
+        exp_l = np.exp(logits - max_l)
+        sum_exp_l = np.sum(exp_l, axis = 1, keepdims = True)
+        return exp_l / sum_exp_l
+
     def forward(self, logits, y_true):
         """
         Args:
@@ -49,7 +55,11 @@ class SoftmaxWithLoss:
 
         검증: 모든 logits가 0이면 확률이 모두 1/10이므로 손실은 ln(10) = 2.3026 이 됩니다.
         """
-        # TODO: 위 1~4 순서대로 구현하세요.
+        self.y_prob = self.prevent_ovf_softmax(logits)
+        self.y_true = y_true
+        B = logits.shape[0]
+        correct = self.y_prob[np.arange(B), y_true]
+        return -np.mean(np.log(np.clip(correct, 1e-7, 1.0)))
         raise NotImplementedError("SoftmaxWithLoss.forward를 구현하세요.")
 
     def backward(self):
