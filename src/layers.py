@@ -73,6 +73,10 @@ class Affine:
         # TODO 2: self.db를 계산하세요. bias는 batch의 모든 샘플에 더해졌으므로
         #         gradient는 batch 방향으로 합쳐야 합니다.
         # TODO 3: dx를 계산해 반환하세요.
+        self.dW = self.x.T @ dout
+        self.db = np.sum(dout, axis=0)
+        dx = dout @ self.W.T
+        return dx
         raise NotImplementedError("Affine.backward를 구현하세요.")
 
 
